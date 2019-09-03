@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Department
-from .serializers import DepartmentSerializer, GenericSerializer
+from .serializers import DepartmentSerializer, getGenericSerializer
 from django.apps import apps
 
 # from django.db.models.loading import get_model
@@ -20,9 +20,11 @@ class GenericMaster(APIView):
         modelToLoad = model
         print("model to load", modelToLoad, app)
         model = apps.get_model(app, modelToLoad)
+        
         # model = get_model('app_name', 'model_name')
         objs = model.objects.all()
-        serializer = GenericSerializer(objs, many=True)
+        GenericSzl = getGenericSerializer(model)
+        serializer = GenericSzl(objs, many=True)
         return Response(serializer.data)
 
     # def post(self, request, format=None):

@@ -2,9 +2,18 @@ from rest_framework import serializers
 
 from .models import Department
 
+def getGenericSerializer(model_arg):
+    class GenericSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = model_arg
+            fields = '__all__'
+        def create(self):
+            pass
 
-class GenericSerializer(serializers.Serializer):
-    pass
+        def update(self):
+            pass
+    return GenericSerializer
+
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
