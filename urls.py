@@ -1,27 +1,33 @@
-from django.contrib import admin
-from django.urls import path,include
-from api import views
-from rest_framework.authtoken.views import obtain_auth_token
+#pylint: disable = C0301,E0401,C0103
+""" URLS for the API Access"""
 
-# from.views import DetailViewSet
-from .views import GenericMaster,LoginView,LogoutView
+from django.contrib import admin
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from api.views import GenericMaster, LoginView, LogoutView, \
+    ListViewDetail, CityTestView, Exe_Test_View
+
+
 
 urlpatterns = [
 
     path('admin/', admin.site.urls),
-
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('master/login',LoginView.as_view(),name='login'),
-    path('master/logout',LogoutView.as_view(),name='logout'),
-
-    path('master/<str:app>.<str:model>/<int:id>', GenericMaster.as_view(), name='master_specific'),
-
-    path('master/<str:app>.<str:model>/', GenericMaster.as_view(), name='master_get'),
-
+    path('master/accounts/login/', auth_views.LoginView.as_view()),
+    # URL for login and Token Generation
+    path('master/login', LoginView.as_view(), name='login'),
+    # URL for logout
+    path('master/logout', LogoutView.as_view(), name='logout'),
+    # spicific operation URL
+    path('master/<str:app>.<str:model>/<int:id>', GenericMaster.as_view(), name='master_specific_operate'),
+    # URL for actual POST
     path('master/<str:app>.<str:model>', GenericMaster.as_view(), name='master_post'),
+    # URL for all the LIST Operations
+    path('master/<str:app>.<str:model>/<str:list>', ListViewDetail.as_view(), name='master_post_get_filter'),
+    # URL for  Nested Serializer
+    path('master/citytest/<str:app>.<str:model>', CityTestView.as_view(), name='citytest'),
+    # URL for test
+    path('master/exe', Exe_Test_View.as_view(), name='exetest')
+# path('master/meta', BookViewSet.as_view(), name='meta')
 
-    path('master/<str:app>.<str:model>/<str:list>', GenericMaster.as_view(), name='master_post_filter'),
-
-    path(r'master/<str:app>.<str:model>/<int:id>?<str:field>=(?P<arg>\w+)?$', GenericMaster.as_view(), name='master_delete_fields')
 
 ]
